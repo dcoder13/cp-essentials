@@ -1,6 +1,10 @@
 /*mujhe kya mai toh dcoder hu*/
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
+using namespace __gnu_pbds;
 
 #define int long long int
 #define YES cout << "YES\n"
@@ -31,16 +35,25 @@ using namespace std;
 #define binary(n) bitset<BITS>(n).to_string()
 #define setbits(n) bitset<BITS>(n).count()
 
-void fast();
 // vi binary(int n);
 vi lowprime(int N);                 // returns lowest prime of all natural numbers upto N
 vi primefactors(int N, vi &v);      //prime factors of any number
 int binexpo(int base , int power);  //returns (base)^power
+int modmul(int a, int b, int M);    //returns (a*b)%M
+int modadd(int a, int b, int M);    //returns (a+b)%M
+int modsub(int a, int b, int M);    //returns (a-b)%M
+int modinv(int a, int M);           //returns (a^-1)%M
+int moddiv(int a, int b, int M);    //returns (a/b)%M
 
+// policy based data structure--------------------------------------------
+template <typename T>
+using ord_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// s.lower_bound(key), s.upper_bound(key), s.erase(key), s.insert(key)
+// s.order_of_key(key), *s.find_by_order(index)
+// -----------------------------------------------------------------------
 
 const int M=1e9 +7;
 vi lp=lowprime( 1 + (int)1e5 );
-
 
 /*----------------------------------------------------------------------------------------------------------------------*/
 
@@ -127,7 +140,28 @@ vi primefactors(int N, vi &v)
     return prime;
 }
 
+int modmul(int a, int b, int M)
+{
+    return ((a%M)*(b%M))%M;
+}
 
+int modadd(int a, int b, int M)
+{
+    return ((a%M)+(b%M))%M;
+}
+
+int modsub(int a, int b, int M)
+{
+    return ((a%M)-(b%M)+M)%M;
+}
+int modinv(int a, int M)
+{
+    return binexpo(a,M-2);
+}
+int moddiv(int a, int b, int M)
+{
+    return ((a%M)*(modinv(b,M)%M))%M;
+}
 // vi binary(int n)
 // {
 //     string a;
