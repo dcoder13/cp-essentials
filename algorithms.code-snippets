@@ -497,21 +497,27 @@
         ],
         "description": "modular int"
     },
-    "better hashmap": {
-        "prefix": "cmap",
+    "hashmap": {
+        "prefix": "hashmap",
         "body": [
+            "",
             "struct chash {",
-            "    const long double PI = 3.14;",
-            "    const uint64_t C = uint64_t(2e18 * PI) + 71;",
-            "    // random 32-bit number",
-            "    const uint32_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();",
+            "    static uint64_t splitmix64(uint64_t x) {",
+            "        // http://xorshift.di.unimi.it/splitmix64.c",
+            "        x += 0x9e3779b97f4a7c15;",
+            "        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;",
+            "        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;",
+            "        return x ^ (x >> 31);",
+            "    }",
+            "",
             "    size_t operator()(uint64_t x) const {",
-            "        return __builtin_bswap64((x ^ RANDOM) * C);",
+            "        static const uint64_t FIXED_RANDOM = std::chrono::steady_clock::now().time_since_epoch().count();",
+            "        return splitmix64(x + FIXED_RANDOM);",
             "    }",
             "};",
             "template <class K, class V> using cmap = unordered_map<K, V, chash>;",
             ""
         ],
-        "description": "better hashmap"
+        "description": "unordered map with custom hash function"
     },
 }
